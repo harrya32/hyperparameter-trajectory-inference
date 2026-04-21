@@ -1,0 +1,27 @@
+glucose/results/
+outputs/
+__pycache__/
+lightning_logs/
+exp/
+wandb/
+saves/
+
+# OS/editor noise
+.DS_Store
+**/.DS_Store
+.ipynb_checkpoints/
+.vscode/
+
+# Python cache/build artifacts
+*.py[cod]
+*.pyo
+*.pyd
+.pytest_cache/
+
+# Experiment outputs
+NLOT/surrogate_models/
+DTR-Bench/surrogate_plots_*/
+DTR-Bench/reacher_data/
+quantile_regression/models/
+quantile_regression/hti_data/*.pt
+generative_dropout/plots/
