@@ -1,0 +1,5 @@
+torch
+numpy==1.26.4
+matplotlib==3.7.3
+scikit-learn==1.5.2
+tqdm==4.67.1

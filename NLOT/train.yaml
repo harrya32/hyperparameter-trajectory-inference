@@ -1,0 +1,81 @@
+defaults:
+  - _self_
+
+# neural_net_metric, neural_net_metric_eig, sq_euclidean_manifold
+geometry: 'sq_euclidean_manifold'
+
+# conditional_semicircles, reward_weighting_data, reacher_data, quantile_data, reward_weighting_hinge_data, 2moons_dropout
+dataset: '2moons_dropout'
+# Optional absolute/relative path to custom .pt data with shape [num_timepoints, num_samples, D+C].
+# If set, built-in dataset preprocessing is skipped.
+dataset_path: null
+# Optional explicit plotting bounds for custom datasets: [xmin, xmax, ymin, ymax].
+# If null for unknown datasets, bounds are inferred from data.
+plot_bounds: null
+D: 2
+C: 1
+categorical: True
+num_categories: 2
+
+include_inverse_potential: True
+bandwidth: 0.2
+conditional_bandwidth: 1.0
+lambda: 0.05
+
+seed: 1
+num_pairs: 11
+#time_points: [0, 1]
+num_train_iters: 2001
+batch_size: 1024
+potential_lr: 1e-4
+wandb: True
+wandb_project: "2moons_eucl_w_potential"
+
+plot_frequency: 500
+save_frequency: ${plot_frequency}
+collect_save_dir: saves
+
+plotting:
+  disable: False
+  num_pairs_plot: 100
+  
+metric:
+  warmup_steps: 50
+  update_frequency: 10
+  update_repeat: 1
+  lr: 5e-3
+
+geometry_kwargs:
+  spline_solver_kwargs:
+    num_spline_nodes: 15
+    grad_tol: 1e-5
+    init_lr: 1e-2
+    num_spline_points_eval: 50
+    max_iter: 0
+
+ctransform_solver:
+  _target_: lagrangian_ot.ctransform_solvers.CTransformLBFGS
+  gtol: 1e-5
+  max_iter: 10
+  max_linesearch_iter: 20
+  linesearch_type: "backtracking"
+
+spline:
+  init_train_iters: 1001
+  train_iters: 1001
+  update_frequency: 25
+  grad_norm_threshold: 1e-4
+  noise: 0.0
+  update_on_conjugates: False
+
+target_potential_dim_hidden: [64, 64, 64, 64]
+source_map_dim_hidden: [64, 64, 64, 64]
+
+hydra:
+  run:
+    dir: ./exp/local/${now:%Y.%m.%d}/${now:%H%M}.${geometry}
+  job:
+    chdir: True
+  sweep:
+    dir: ./exp/${now:%Y.%m.%d}/${now:%H%M}
+    subdir: ${hydra.job.num}

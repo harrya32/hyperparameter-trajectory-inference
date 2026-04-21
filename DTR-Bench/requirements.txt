@@ -1,0 +1,7 @@
+DTRGym==0.1.0
+gymnasium==0.28.1
+stable-baselines3==2.6.0
+numpy==1.26.4
+scipy==1.12.0
+matplotlib==3.7.3
+torch
