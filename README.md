@@ -1,6 +1,6 @@
 # Hyperparameter Trajectory Inference (HTI)
 
-Code and experiment assets for [**Hyperparameter Trajectory Inference with Conditional Lagrangian Optimal Transport**](https://openreview.net/pdf?id=P5B97gZwRb), by Harry Amad and Mihaela van der Schaar (ICLR 2026).
+Code to implement HTI with CLOT, and reproduce experiments from the paper [**Hyperparameter Trajectory Inference with Conditional Lagrangian Optimal Transport**](https://openreview.net/pdf?id=P5B97gZwRb), by Harry Amad and Mihaela van der Schaar (ICLR 2026).
 
 This repository contains:
 - Conditional Lagrangian optimal transport-based HTI surrogate training code.
@@ -58,11 +58,11 @@ For Reacher experiments, install MuJoCo support:
 pip install "gymnasium[mujoco]"
 ```
 
-## Train HTI on Your Own Data
+## Train CLOT HTI surrogate on Your Own Data
 
 ### 1. Prepare data tensor
 
-HTI expects a `.pt` tensor with shape:
+The CLOT training expects a `.pt` tensor with shape:
 
 ```text
 [num_timepoints, num_samples_per_timepoint, D + C]
@@ -88,14 +88,11 @@ python NLOT/train.py \
 ```
 
 Notes:
-- For custom datasets, plotting bounds are auto-inferred from first 2 ambient dims.
-- You can override bounds explicitly:
+- For custom datasets, bounds are auto-inferred, and you can override them explicitly:
 
 ```bash
 python NLOT/train.py dataset='my_dataset' dataset_path='/path/my_dataset.pt' plot_bounds=[-3,3,-2,2]
 ```
-
-- To train on a subset of transitions, use `num_pairs=<k>`.
 
 ### 3. Outputs
 
@@ -108,6 +105,8 @@ exp/local/<YYYY.MM.DD>/<HHMM>.<geometry>/
 Checkpoints:
 - `latest.pkl` in run dir.
 - Optional collection copy in `collect_save_dir` (used by reproducibility scripts).
+
+The saved CLOT model can then be used to infer hyperparameter-induced dynamics and sample transported NN outputs, within the range of hyperparameters in the training data.
 
 ## Reproducing Paper Experiments
 
@@ -127,7 +126,7 @@ python generate_synth_data.py
 cd ..
 ```
 
-Train all HTI variants:
+Train all HTI variants with different metric learning/potential energy settings:
 
 ```bash
 ./hti_scripts/semicircles.sh
@@ -203,7 +202,7 @@ DTR-Bench/surrogate_plots_hinge/<method>/
 
 Dataset is included as `NLOT/data/reacher_data.pt`.
 
-Optional regeneration from saved Reacher policies:
+Optional regeneration from saved policies (trained in the reacher.ipynb notebook):
 
 ```bash
 cd DTR-Bench
@@ -289,6 +288,8 @@ Train surrogates:
 Evaluation in terms of W.D. can be found in wandb logs.
 
 ## Citation
+
+If you use this repository, please cite the associated ICLR paper:
 
 ```bibtex
 @inproceedings{
